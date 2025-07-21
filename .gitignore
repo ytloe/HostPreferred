@@ -1,0 +1,63 @@
+# =================================================
+# IDE / Editor / System Files
+# =================================================
+# Logs and temporary files
+*.log
+*.swp
+.history
+
+# macOS and Windows system files
+.DS_Store
+Thumbs.db
+
+# JetBrains (IntelliJ, Android Studio)
+*.iml
+*.idea/
+
+# VS Code - uncomment if you don't want to share launch configs
+# .vscode/
+
+# =================================================
+# Flutter / Dart
+# =================================================
+# Flutter/Pub build artifacts and caches
+build/
+.dart_tool/
+.pub-cache/
+
+# Flutter generated files
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# NOTE: pubspec.lock SHOULD be committed for reproducible builds.
+
+# =================================================
+# Rust (within the 'rust' directory)
+# =================================================
+# Rust build artifacts
+rust/target/
+
+# NOTE: rust/Cargo.lock SHOULD be committed for reproducible builds.
+
+# =================================================
+# PLATFORM-SPECIFIC FOLDERS (TO BE IGNORED & DELETED)
+# =================================================
+# These folders are for platforms you are not targeting.
+# It is recommended to DELETE these folders from your project.
+/android/
+/ios/
+/linux/
+/macos/
+/web/
+
+# The default test file is for the template app and can be removed.
+/test/
+
+# =================================================
+# Windows Build Artifacts
+# =================================================
+# Specific build outputs within the /windows directory
+/windows/build/
+/windows/x64/
+/windows/out/
+/windows/.vs/
