@@ -37,16 +37,27 @@ fn get_domains_for_target(target: &OptimizationTarget) -> DomainList {
                 "avatars.githubusercontent.com",
             ],
             optional: vec![
-                "avatars0.githubusercontent.com", "avatars1.githubusercontent.com",
-                "avatars2.githubusercontent.com", "avatars3.githubusercontent.com",
-                "avatars4.githubusercontent.com", "avatars5.githubusercontent.com",
-                "camo.githubusercontent.com", "codeload.github.com",
-                "desktop.githubusercontent.com", "assets-cdn.github.com",
-                "gist.github.com", "github.io", "api.github.com",
-                "live.github.com", "media.githubusercontent.com",
-                "central.github.com", "cloud.githubusercontent.com",
-                "user-images.githubusercontent.com", "objects.githubusercontent.com",
-                "ghcr.io", "github.global.ssl.fastly.net",
+                "avatars0.githubusercontent.com", 
+                "avatars1.githubusercontent.com",
+                "avatars2.githubusercontent.com", 
+                "avatars3.githubusercontent.com",
+                "avatars4.githubusercontent.com", 
+                "avatars5.githubusercontent.com",
+                "camo.githubusercontent.com", 
+                "codeload.github.com",
+                "desktop.githubusercontent.com", 
+                // "assets-cdn.github.com",
+                "gist.github.com", 
+                "github.io", 
+                "api.github.com",
+                "live.github.com", 
+                "media.githubusercontent.com",
+                "central.github.com", 
+                "cloud.githubusercontent.com",
+                "user-images.githubusercontent.com", 
+                "objects.githubusercontent.com",
+                "ghcr.io", 
+                "github.global.ssl.fastly.net",
             ],
         },
         OptimizationTarget::Cloudflare => DomainList {
@@ -102,7 +113,7 @@ async fn fetch_ips_via_doh(domains: Vec<&'static str>) -> Result<HashMap<String,
                 let url = format!("{}?name={}&type=A", server, domain);
                 let request_future = HTTP_CLIENT.get(&url).header("accept", "application/dns-json").send();
 
-                match timeout(Duration::from_secs(5), request_future).await {
+                match timeout(Duration::from_secs(2), request_future).await {
                     Ok(Ok(response)) => {
                         if let Ok(json) = response.json::<DohResponse>().await {
                             if let Some(answers) = json.answer {
