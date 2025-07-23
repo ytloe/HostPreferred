@@ -313,6 +313,7 @@ impl SseDecode for crate::api::models::OptimizationTarget {
         return match inner {
             0 => crate::api::models::OptimizationTarget::GitHub,
             1 => crate::api::models::OptimizationTarget::Cloudflare,
+            2 => crate::api::models::OptimizationTarget::NexusMods,
             _ => unreachable!("Invalid variant for OptimizationTarget: {}", inner),
         };
     }
@@ -385,6 +386,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::models::OptimizationTarget {
         match self {
             Self::GitHub => 0.into_dart(),
             Self::Cloudflare => 1.into_dart(),
+            Self::NexusMods => 2.into_dart(),
             _ => unreachable!(),
         }
     }
@@ -449,6 +451,7 @@ impl SseEncode for crate::api::models::OptimizationTarget {
             match self {
                 crate::api::models::OptimizationTarget::GitHub => 0,
                 crate::api::models::OptimizationTarget::Cloudflare => 1,
+                crate::api::models::OptimizationTarget::NexusMods => 2,
                 _ => {
                     unimplemented!("");
                 }

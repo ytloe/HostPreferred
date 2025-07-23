@@ -7,7 +7,8 @@ use flutter_rust_bridge::frb;
 #[derive(Debug, Clone, Copy)]
 pub enum OptimizationTarget {
     GitHub,
-    Cloudflare, // 【新增】
+    Cloudflare,
+    NexusMods
 }
 
 // 【新增】为枚举实现 Display trait，方便在日志和UI中显示名称
@@ -16,6 +17,7 @@ impl Display for OptimizationTarget {
         match self {
             OptimizationTarget::GitHub => write!(f, "GitHub"),
             OptimizationTarget::Cloudflare => write!(f, "Cloudflare"),
+            OptimizationTarget::NexusMods => write!(f, "Nexusmods"),
         }
     }
 }

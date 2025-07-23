@@ -1,9 +1,12 @@
 import 'dart:async';
 
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/material.dart' as material;
+// import 'package:flutter/material.dart' as material;
 import 'package:system_theme/system_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+// Import the SVG package if you choose to use SVG icons
+// import 'package:flutter_svg/flutter_svg.dart';
 
 import 'src/rust/api/io.dart';
 import 'src/rust/api/models.dart';
@@ -70,7 +73,6 @@ class _MainPageState extends State<MainPage> {
     super.dispose();
   }
 
-  /// 备份当前 Host 文件
   Future<void> _saveCurrentHost() async {
     try {
       final backupPath = await saveCurrentHosts();
@@ -80,7 +82,6 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
-  /// 优选 GitHub Host
   Future<void> _optimizeGitHubHost() async {
     _showInfoBar('正在优选并应用 GitHub Host...');
     try {
@@ -93,7 +94,6 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
-  /// 优选 Cloudflare Host
   Future<void> _optimizeCloudflareHost() async {
     _showInfoBar('正在优选并应用 Cloudflare Host...');
     try {
@@ -106,7 +106,18 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
-  /// 【新功能】从备份还原 Host
+  Future<void> _optimizeNexusModsHost() async {
+    _showInfoBar('正在优选并应用 Nexus Mods Host...');
+    try {
+      final successMessage = await optimizeHosts(
+        target: OptimizationTarget.nexusMods,
+      );
+      _showInfoBar(successMessage);
+    } catch (e) {
+      _showInfoBar('操作失败: $e');
+    }
+  }
+
   Future<void> _revertHost() async {
     _showInfoBar('正在从备份还原 Host...');
     try {
@@ -117,7 +128,6 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
-  /// 显示一个信息提示条，3秒后自动消失
   void _showInfoBar(String message) {
     _infoBarTimer?.cancel();
     setState(() {
@@ -131,7 +141,6 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
-  /// 打开 Host 文件所在目录
   Future<void> _openHostsDir() async {
     if (_hostsDirPath != null && _hostsDirPath != '路径获取失败') {
       final uri = Uri.directory(_hostsDirPath!);
@@ -147,6 +156,11 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    final Brightness brightness = FluentTheme.of(context).brightness;
+    final Color iconColor = brightness == Brightness.dark
+        ? Colors.white.withOpacity(0.9)
+        : Colors.black.withOpacity(0.8);
+
     return Stack(
       children: [
         ScaffoldPage(
@@ -171,50 +185,40 @@ class _MainPageState extends State<MainPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 _buildActionButton(
-                  icon: material.Icons.save_alt,
+                  assetPath: 'assets/icons/save.png',
                   label: '保存当前 Host',
                   onPressed: _saveCurrentHost,
-                ),
-                const SizedBox(height: 16),
-                FilledButton(
-                  onPressed: _optimizeGitHubHost,
-                  style: ButtonStyle(
-                    padding: WidgetStateProperty.all(
-                      const EdgeInsets.symmetric(vertical: 12.0),
-                    ),
-                  ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(material.Icons.hub_outlined, size: 20),
-                      SizedBox(width: 8),
-                      Text('GitHub 优选'),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 16),
-                FilledButton(
-                  onPressed: _optimizeCloudflareHost,
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(Colors.orange),
-                    padding: WidgetStateProperty.all(
-                      const EdgeInsets.symmetric(vertical: 12.0),
-                    ),
-                  ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(material.Icons.cloud_outlined, size: 20),
-                      SizedBox(width: 8),
-                      Text('Cloudflare 优选'),
-                    ],
-                  ),
+                  iconColor: iconColor,
                 ),
                 const SizedBox(height: 16),
                 _buildActionButton(
-                  icon: material.Icons.replay_circle_filled,
+                  assetPath: 'assets/icons/github.png',
+                  label: 'GitHub 优选',
+                  onPressed: _optimizeGitHubHost,
+                  iconColor: brightness == Brightness.dark
+                      ? Colors.white
+                      : null,
+                ),
+                const SizedBox(height: 16),
+                _buildActionButton(
+                  assetPath: 'assets/icons/cloudflare.png',
+                  label: 'Cloudflare 优选',
+                  onPressed: _optimizeCloudflareHost,
+                  iconColor: null,
+                ),
+                const SizedBox(height: 16),
+                _buildActionButton(
+                  assetPath: 'assets/icons/nexusmods.png',
+                  label: 'Nexus Mods 优选',
+                  onPressed: _optimizeNexusModsHost,
+                  iconColor: null,
+                ),
+                const SizedBox(height: 16),
+                _buildActionButton(
+                  assetPath: 'assets/icons/revert.png',
                   label: '还原 Host',
                   onPressed: _revertHost,
+                  iconColor: iconColor,
                 ),
               ],
             ),
@@ -262,21 +266,41 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
+  // ## 这里是主要修改点：按钮颜色 ##
   Widget _buildActionButton({
-    required IconData icon,
+    required String assetPath,
     required String label,
     required VoidCallback onPressed,
+    Color? iconColor,
   }) {
-    return Button(
+    final brightness = FluentTheme.of(context).brightness;
+    // 为按钮选择一个柔和的、能适应主题的灰色
+    final Color buttonColor = brightness == Brightness.dark
+        ? Colors.grey[120] // 深色模式下的按钮颜色
+        : Colors.grey[60]; // 浅色模式下的按钮颜色
+
+    return FilledButton(
       onPressed: onPressed,
       style: ButtonStyle(
+        // 应用我们自定义的颜色
+        backgroundColor: WidgetStateProperty.all(buttonColor),
         padding: WidgetStateProperty.all(
           const EdgeInsets.symmetric(vertical: 12.0),
         ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [Icon(icon, size: 20), const SizedBox(width: 8), Text(label)],
+        children: [
+          Image.asset(
+            assetPath,
+            width: 32,
+            height: 32,
+            color: iconColor,
+            filterQuality: FilterQuality.high,
+          ),
+          const SizedBox(width: 8),
+          Text(label),
+        ],
       ),
     );
   }

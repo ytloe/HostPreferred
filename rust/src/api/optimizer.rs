@@ -62,16 +62,27 @@ fn get_domains_for_target(target: &OptimizationTarget) -> DomainList {
         },
         OptimizationTarget::Cloudflare => DomainList {
             core: vec![
+                "dash.cloudflare.com",
                 "cloudflare.com",
                 "one.one.one.one",
             ],
             optional: vec![
-                "dash.cloudflare.com",
                 "api.cloudflare.com",
                 "cdnjs.cloudflare.com",
                 "images.cloudflare.com",
                 "workers.dev",
                 "pages.dev",
+            ],
+        },
+        OptimizationTarget::NexusMods => DomainList {
+            core: vec![
+                "www.nexusmods.com",
+                "staticdelivery.nexusmods.com",
+            ],
+            optional: vec![
+                "cf-files.nexusmods.com",
+                "staticstats.nexusmods.com",
+                "users.nexusmods.com",
             ],
         },
     }

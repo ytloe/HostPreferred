@@ -68,6 +68,7 @@ pub fn update_hosts_file(target: OptimizationTarget, optimized_hosts: &Vec<(Stri
     let (start_marker, end_marker) = match target {
         OptimizationTarget::GitHub => ("# == Github ==", "# ========="),
         OptimizationTarget::Cloudflare => ("# == Cloudflare ==", "# ============"),
+        OptimizationTarget::NexusMods => ("# == Nexusmods ==", "# ============"),
     };
 
     let mut new_lines = Vec::new();

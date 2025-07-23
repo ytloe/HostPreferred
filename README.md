@@ -28,26 +28,23 @@
     git clone https://github.com/ytloe/HostPreferred.git
     cd host_preferred
     ```
-2.  获取 Flutter 依赖：
-    ```sh
-    flutter pub get
-    ```
-3.  生成桥接代码：
+2.  生成桥接代码：
     ```sh
     flutter_rust_bridge_codegen generate
     ```
-4.  构建 Windows 应用（此处展示最优实现）：
+3.  构建 Windows 应用同时补全 flutter 依赖（此处展示最优实现）：
     ```sh
+    flutter clean
     flutter build windows --tree-shake-icons
     ```
     可执行文件将位于 `build\windows\x64\runner\Release` 目录下。
-5.  （可选）使用[upx](https://github.com/upx/upx/releases/)压缩 dll 体积
+4.  （可选）使用[upx](https://github.com/upx/upx/releases/)压缩 dll 体积
     ```sh
     cd build\windows\x64\runner\Release
     <upx.exe文件路径> flutter_windows.dll
     <upx.exe文件路径> rust_lib_host_preferred.dll
     ```
-6.  （可选）使用[Enigma Virtual Box](https://www.enigmaprotector.com/en/downloads.html)制作单文件
+5.  （可选）使用[Enigma Virtual Box](https://www.enigmaprotector.com/en/downloads.html)制作单文件
     - 下载安装，左上角 Language 切换为自己能看懂的语言，重启软件
     - 待封包的主程序右侧“浏览”选中构建好的 host_preferred.exe
     - 剩下的 dll 和 data 文件夹一起放入下方的 Virtual Box Files 里面
